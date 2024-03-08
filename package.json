@@ -4,9 +4,9 @@
   "description": "Full Stack kurssin osan 4 tehtävät: blogilista-aplikaation backend ja testit.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "node --test"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test node --test"
   },
   "keywords": [
     "backend",
@@ -20,6 +20,8 @@
     "mongoose": "^8.1.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.0.3",
+    "supertest": "^6.3.4"
   }
 }
