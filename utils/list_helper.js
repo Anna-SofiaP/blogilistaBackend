@@ -26,7 +26,7 @@ const favoriteBlog = (blogs) => {
 
 const mostBlogs = (blogs) => {
     if (blogs.length === 0) return 0
-    
+
     let authors = [blogs[0].author]
     let blogAmount = [1]
 
@@ -36,8 +36,8 @@ const mostBlogs = (blogs) => {
             let index = authors.indexOf(current)
             blogAmount[index]++
         } else {
-            authors.concat(current)
-            blogAmount.concat(1)
+            authors = authors.concat(current)
+            blogAmount = blogAmount.concat(1)
         }
     }
 

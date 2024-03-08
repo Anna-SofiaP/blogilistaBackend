@@ -67,12 +67,12 @@ describe('most blogs', () => {
 
     test('when length of list is 0', () => {
         const result = listHelper.mostBlogs([])
-        assert.strictEqual(result, 0)
+        assert.deepStrictEqual(result, 0)
     })
   
     test('when list has only one blog', () => {
         const result = listHelper.mostBlogs(listWithOneBlog)
-        assert.strictEqual(result, 
+        assert.deepStrictEqual(result, 
             {
                 author: 'Edsger W. Dijkstra',
                 blogs: 1
@@ -80,9 +80,13 @@ describe('most blogs', () => {
         )
     })
 
-    /*
-    test('of a bigger list is calculated right', () => {
+    test('when list has two or more blogs', () => {
         const result = listHelper.mostBlogs(listWithTwoOrMore)
-        assert.strictEqual(result, 36)
-    })*/
+        assert.deepStrictEqual(result, 
+            {
+                author: 'Robert C. Martin',
+                blogs: 3
+            }
+        )
+    })
   })
