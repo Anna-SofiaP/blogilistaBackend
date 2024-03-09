@@ -10,16 +10,20 @@ blogsRouter.get('/', async (request, response) => {
   
 
 //TODO: Muuta tämäkin async awaitiksi!
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
-  logger.info('Adding new post... ', blog)
-
-  blog
-    .save()
-    .then(result => {
-      logger.info('New post added! ', result)
-      response.status(201).json(result)
+blogsRouter.post('/', async (request, response) => {
+    const body = request.body
+    
+    const blog = new Blog({
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes
     })
+    logger.info('Adding new post... ', blog)
+
+    const result = await blog.save()
+    logger.info('New post added! ', result)
+    response.status(201).json(result)
 })
 
 module.exports = blogsRouter
