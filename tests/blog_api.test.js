@@ -36,6 +36,14 @@ test('testing the get-method', async () => {
     assert.strictEqual(response.body.length, initialBlogList.length)
 })
 
+test('identifier for a blog should be id and not _id', async () => {
+    const response = await api.get('/api/blogs')
+
+    const blogs = response.body    //.map(item => item.id)
+    //assert.strictEqual(response.body.length, initialBlogList.length)
+    assert(blogs.every(blog => 'id' in blog && typeof blog.id === 'string' && !('_id' in blog)))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })

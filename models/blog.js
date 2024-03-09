@@ -13,6 +13,6 @@ blogSchema.set('toJSON', {
       delete blogObject._id
       delete blogObject.__v
     }
-  })
+})
 
 module.exports = mongoose.model('Blog', blogSchema)
