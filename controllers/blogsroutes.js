@@ -9,7 +9,6 @@ blogsRouter.get('/', async (request, response) => {
 })
   
 
-//TODO: Muuta tämäkin async awaitiksi!
 blogsRouter.post('/', async (request, response) => {
     const body = request.body
     

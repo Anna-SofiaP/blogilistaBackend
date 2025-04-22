@@ -30,12 +30,14 @@ beforeEach(async () => {
     await blogObject.save()
 })
 
+// Tehtävä 4.8
 test('testing the get-method', async () => {
     const response = await api.get('/api/blogs')
   
     assert.strictEqual(response.body.length, initialBlogList.length)
 })
 
+// Tehtävä 4.9
 test('identifier for a blog should be id and not _id', async () => {
     const response = await api.get('/api/blogs')
 
@@ -44,6 +46,7 @@ test('identifier for a blog should be id and not _id', async () => {
     assert(blogs.every(blog => 'id' in blog && typeof blog.id === 'string' && !('_id' in blog)))
 })
 
+// Tehtävä 4.10
 test('a blog can be added', async () =>{
     const newBlog = {
         title: 'Lovely Live',
@@ -59,7 +62,7 @@ test('a blog can be added', async () =>{
         .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
-    const blogs = response.body.map(item => item.content)
+    const blogs = response.body.map(item => item.title)
     
     assert.strictEqual(response.body.length, initialBlogList.length + 1)
     
