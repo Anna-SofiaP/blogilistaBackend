@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -67,6 +67,57 @@ test('a blog can be added', async () =>{
     assert.strictEqual(response.body.length, initialBlogList.length + 1)
     
     assert(blogs.includes('Lovely Live'))
+})
+
+// Tehtävä 4.13
+describe('deleting a post', () => {
+
+    beforeEach(async () => {
+        await Blog.deleteMany({})
+        let blogObject = new Blog(initialBlogList[0])
+        await blogObject.save()
+        blogObject = new Blog(initialBlogList[1])
+        await blogObject.save()
+    })
+
+    test('is done correctly', async () => {
+        const response = await api.get('/api/blogs')
+        blogToBeDeleted = response.body[0].id
+
+        await api
+            .del('/api/blogs/' + blogToBeDeleted)
+            .expect(204)
+        
+        const newResponse = await api.get('/api/blogs')
+        const blogs = newResponse.body.map(item => item.title)
+
+        assert.strictEqual(blogs.includes('My Awesome Blog'), false)
+    })
+
+    test('decreases the number of posts by one', async () => {
+        const response = await api.get('/api/blogs')
+        blogToBeDeleted = response.body[0].id
+
+        await api
+            .del('/api/blogs/' + blogToBeDeleted)
+            .expect(204)
+        
+        const newResponse = await api.get('/api/blogs')
+
+        assert.strictEqual(newResponse.body.length, initialBlogList.length - 1)
+    })
+
+    test('fails for a nonexistent blog with status code 400', async () => {
+        const nonexistentBlog = "0101"
+
+        await api
+            .del('/api/blogs/' + nonexistentBlog)
+            .expect(400)
+
+        const response = await api.get('/api/blogs')
+        
+        assert.strictEqual(response.body.length, initialBlogList.length)
+    })
 })
 
 after(async () => {
