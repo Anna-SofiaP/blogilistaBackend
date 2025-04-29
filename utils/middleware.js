@@ -12,6 +12,18 @@ const errorHandler = (error, request, response, next) => {
     }
   
     next(error)
-  }
+}
 
-module.exports = { errorHandler }
+const tokenExtractor = (request, response, next) => {
+    // Get value of the authorization header from request body
+    const auth = request.get('authorization')
+    if (auth && auth.startsWith('Bearer ')) {
+        request.token = auth.replace('Bearer ', '')
+    } else {
+        request.token = null
+    }
+
+    next()
+}
+
+module.exports = { errorHandler, tokenExtractor }
