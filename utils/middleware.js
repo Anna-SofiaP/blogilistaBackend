@@ -18,9 +18,11 @@ const errorHandler = (error, request, response, next) => {
 
 const tokenExtractor = (request, response, next) => {
     // Get value of the authorization header from request body
+    logger.info("Token extraction")
     const auth = request.get('authorization')
     if (auth && auth.startsWith('Bearer ')) {
         request.token = auth.replace('Bearer ', '')
+        logger.info("Token was extracted: " + request.token)
     } else {
         request.token = null
     }
@@ -29,14 +31,22 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = async (request, response, next) => {
+  try {
     // Decode the token that was sent with the request
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    //logger.info("token: " + decodedToken)
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'invalid token' })
     }
-    request.user = await User.findById(decodedToken.id)
+    logger.info("Id of the user: " + decodedToken.id)
+    const user = await User.findById(decodedToken.id)
+    request.user = user
+    logger.info("request.user: " + request.user)
 
     next()
+  } catch (error) {
+    next(error)
+  }
 }
 
 module.exports = { errorHandler, tokenExtractor, userExtractor }
