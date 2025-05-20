@@ -49,20 +49,22 @@ blogsRouter.put('/:id', middleware.tokenExtractor, middleware.userExtractor, asy
     const blogToUpdateID = request.params.id
     logger.info('Updating a post with id: ' + blogToUpdateID)
     const blogToUpdate = request.body
-    logger.info('Blog to update: ' + blogToUpdate)
+    logger.info('Blogs new likes: ' + blogToUpdate.likes)
+    //const user = request.user
 
     try {
-        const user = request.user
-        logger.info('User whose blog is being updated: ' + user)
-
+        //logger.info('User whose blog is being updated: ' + user)
         const blog = await Blog.findById(blogToUpdateID)
-        logger.info('Blog that we want to update: ' + blog)
+        logger.info('Old blog that we want to update: ' + blog)
 
-        if (blog.user.toString() === user._id.toString()) {
-            const result = await Blog.findByIdAndUpdate(blog._id, blogToUpdate)
-            logger.info('Post updated! ' + result)
-            response.status(204).end()
-        }
+        logger.info("User id: " + blog.user.toString())
+        //logger.info("User id: " + user._id.toString())
+
+        const oldblog = await Blog.findByIdAndUpdate(blog._id, blogToUpdate)
+        logger.info('Post updated! ' + oldblog)
+        const newBlog = await Blog.findById(blog._id).populate('user', { username: 1, id: 1, name: 1 })
+        logger.info('Blogs new data: ' + newBlog)
+        response.status(201).json(newBlog)
 
     } catch (exception) {
         next(exception)
