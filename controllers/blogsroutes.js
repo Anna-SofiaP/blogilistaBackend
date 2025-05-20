@@ -27,7 +27,7 @@ blogsRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async
             author: body.author,
             url: body.url,
             likes: body.likes,
-            user: user._id
+            user: user
         })
 
         logger.info('Adding new post... ', blog)
@@ -72,7 +72,7 @@ blogsRouter.put('/:id', middleware.tokenExtractor, middleware.userExtractor, asy
 })
 
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', middleware.tokenExtractor, middleware.userExtractor, async (request, response, next) => {
     const blogToDelete = request.params.id
     logger.info('Deleting a post with id: ' + blogToDelete)
 
@@ -82,10 +82,16 @@ blogsRouter.delete('/:id', async (request, response, next) => {
         // Find the blog to be deleted
         const blog = await Blog.findById(blogToDelete)
 
+        logger.info("User id: " + blog.user.toString())
+        logger.info("User id: " + user._id.toString())
+
         if (blog.user.toString() === user._id.toString()) {
             const result = await Blog.findByIdAndDelete(blogToDelete)
             logger.info('Post deleted! ', result)
-            response.status(204).end()
+            response.status(201).end()
+        } else {
+            // Unauthorized, if the logged in user is not the one who created the blog
+            response.status(401).end()
         }
 
     } catch (exception) {
